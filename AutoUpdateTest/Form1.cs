@@ -7,7 +7,7 @@ namespace AutoUpdateTest
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(9,0,0);
+        private static VersionNumber version = new(10,0,0);
 
         public Form1()
         {
