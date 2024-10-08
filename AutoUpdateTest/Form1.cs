@@ -1,4 +1,5 @@
 using AutoUpdaterDotNET;
+using System.Diagnostics;
 using System.Net;
 
 namespace AutoUpdateTest
@@ -6,7 +7,7 @@ namespace AutoUpdateTest
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(8,0,0);
+        private static VersionNumber version = new(9,0,0);
 
         public Form1()
         {
@@ -49,6 +50,8 @@ namespace AutoUpdateTest
                     // Download file
                     byte[] fileBytes = await client.GetByteArrayAsync(url);
                     await File.WriteAllBytesAsync(saveFileDialog.FileName, fileBytes);
+
+                    Process.Start(saveFileDialog.FileName);
                 }
                 catch (Exception ex)
                 {
