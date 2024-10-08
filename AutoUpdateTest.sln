@@ -8,9 +8,6 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup1", "Setup1\Setup1.vdproj", "{77CABF21-8CAA-40B7-96FF-32E5A3932489}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18B37FBD-AA73-48B2-8EC4-A79CD30A213B}"
-	ProjectSection(SolutionItems) = preProject
-		latestVersion.xml = latestVersion.xml
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
