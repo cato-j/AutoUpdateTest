@@ -1,4 +1,5 @@
 using AutoUpdaterDotNET;
+using System;
 using System.Diagnostics;
 using System.Net;
 
@@ -6,8 +7,7 @@ namespace AutoUpdateTest
 {
     public partial class Form1 : Form
     {
-        private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(12,0,0);
+        private static readonly VersionNumber version = new(13, 0, 0);
 
         public Form1()
         {
@@ -15,29 +15,36 @@ namespace AutoUpdateTest
 
             label1.Text = version.ToString();
 
-            CheckForUpdates();
+            this.Load += Form1_Load;
+        }
+
+        private async void Form1_Load(object? sender, EventArgs e)
+        {
+            await CheckForUpdates();
         }
 
         public async Task CheckForUpdates()
         {
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("User-Agent", "request");
-
-            var updater = new GitHubUpdater();
-            var latest = await updater.GetLatestRelease(client);
-            var latestVersion = new VersionNumber(latest.TagName);
-
-            label1.Text = $"{version.ToString()} | {latestVersion}";
-
-            if (latestVersion > version)
+            try
             {
-                try
+                using HttpClient client = new();
+                client.DefaultRequestHeaders.Add("User-Agent", "request");
+
+                var updater = new GitHubUpdater();
+                var latest = await GitHubUpdater.GetLatestRelease(client);
+                if (latest == null) return;
+                var latestVersion = new VersionNumber(latest.TagName);
+
+                label1.Text = $"{version} | {latestVersion}";
+
+                if (latestVersion > version)
                 {
                     var assets = latest.Assets;
                     var first = assets.FirstOrDefault();
+                    if (first == null) return;
                     var url = first.BrowserDownloadUrl;
 
-                    using SaveFileDialog saveFileDialog = new SaveFileDialog()
+                    using SaveFileDialog saveFileDialog = new()
                     {
                         AddExtension = true,
                         AddToRecent = true,
@@ -53,11 +60,12 @@ namespace AutoUpdateTest
 
                     Process.Start("msiexec.exe", $"/i \"{saveFileDialog.FileName}\" /passive");
                     Environment.Exit(0);
-                }
-                catch (Exception ex)
-                {
 
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

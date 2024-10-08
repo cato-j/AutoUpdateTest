@@ -10,8 +10,8 @@ namespace AutoUpdateTest
 {
     internal class GitHubUpdater
     {
-        private static string baseLatestUrl = "https://api.github.com/repos/your_username/your_repo/releases/latest";
-        private static string latestUrl
+        private static readonly string baseLatestUrl = "https://api.github.com/repos/your_username/your_repo/releases/latest";
+        private static string LatestUrl
         {
             get
             {
@@ -24,19 +24,12 @@ namespace AutoUpdateTest
             }
         }
 
-        public async Task<GitHubRelease?> GetLatestRelease(HttpClient client)
+        public static async Task<GitHubRelease?> GetLatestRelease(HttpClient client)
         {
-            try
-            {
-                var response = await client.GetStringAsync(latestUrl);
-                GitHubRelease? release = JsonConvert.DeserializeObject<GitHubRelease>(response);
+            var response = await client.GetStringAsync(LatestUrl);
+            GitHubRelease? release = JsonConvert.DeserializeObject<GitHubRelease>(response);
 
-                return release;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return release;
         }
 
         public class GitHubRelease
@@ -52,6 +45,14 @@ namespace AutoUpdateTest
 
             [JsonProperty("assets")]
             public List<Asset> Assets { get; set; }
+
+            public GitHubRelease()
+            {
+                TagName = string.Empty;
+                Name = string.Empty;
+                Body = string.Empty;
+                Assets = [];
+            }
         }
 
         public class Asset
@@ -61,6 +62,12 @@ namespace AutoUpdateTest
 
             [JsonProperty("browser_download_url")]
             public string BrowserDownloadUrl { get; set; }
+
+            public Asset()
+            {
+                Name = string.Empty;
+                BrowserDownloadUrl = string.Empty;
+            }
         }
     }
 }
