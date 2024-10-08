@@ -1,13 +1,12 @@
 using AutoUpdaterDotNET;
+using System.Net;
 
 namespace AutoUpdateTest
 {
     public partial class Form1 : Form
     {
-        internal static string pat = "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";
-        private static string token => $"Bearer {pat}";
         private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(6,0,0);
+        private static VersionNumber version = new(7,0,0);
 
         public Form1()
         {
@@ -17,19 +16,44 @@ namespace AutoUpdateTest
 
             CheckForUpdates();
         }
+
         public async Task CheckForUpdates()
         {
+            using HttpClient client = new();
+            client.DefaultRequestHeaders.Add("User-Agent", "request");
+
             var updater = new GitHubUpdater();
-            var latest = await updater.GetLatestRelease();
+            var latest = await updater.GetLatestRelease(client);
             var latestVersion = new VersionNumber(latest.TagName);
 
             label1.Text = $"{version.ToString()} | {latestVersion}";
 
             if (latestVersion > version)
             {
-                AutoUpdater.Start(latest.Assets.Find(x=>x.BrowserDownloadUrl.ToLower().Equals(".msi")).BrowserDownloadUrl);
-                AutoUpdater.HttpUserAgent = pat;
-                //AutoUpdater.CurrentVersion = latestVersion;
+                try
+                {
+                    var assets = latest.Assets;
+                    var first = assets.FirstOrDefault();
+                    var url = first.BrowserDownloadUrl;
+
+                    using SaveFileDialog saveFileDialog = new SaveFileDialog()
+                    {
+                        AddExtension = true,
+                        AddToRecent = true,
+                        DefaultExt = ".msi",
+                        FileName = first.Name,
+                        OverwritePrompt = true,
+                    };
+                    if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                    // Download file
+                    byte[] fileBytes = await client.GetByteArrayAsync(url);
+                    await File.WriteAllBytesAsync(saveFileDialog.FileName, fileBytes);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
     }

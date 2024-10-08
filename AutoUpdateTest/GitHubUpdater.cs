@@ -10,7 +10,6 @@ namespace AutoUpdateTest
 {
     internal class GitHubUpdater
     {
-        private static readonly HttpClient client = new HttpClient();
         private static string baseLatestUrl = "https://api.github.com/repos/your_username/your_repo/releases/latest";
         private static string latestUrl
         {
@@ -24,13 +23,9 @@ namespace AutoUpdateTest
                 return s;
             }
         }
-        private static string token => $"Bearer {Form1.pat}";
 
-        public async Task<GitHubRelease?> GetLatestRelease()
+        public async Task<GitHubRelease?> GetLatestRelease(HttpClient client)
         {
-            client.DefaultRequestHeaders.Add("User-Agent", "request");
-            client.DefaultRequestHeaders.Add("Authorization", token);
-
             try
             {
                 var response = await client.GetStringAsync(latestUrl);
