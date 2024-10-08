@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<item>
+	<version>1.0.0.0</version>
+	<url>https://github.com/your_username/your_repo/releases/download/v2.0.0.0/your_app.zip</url>
+	<changelog>https://github.com/your_username/your_repo/releases/tag/v2.0.0.0</changelog>
+	<mandatory>false</mandatory>
+</item>
