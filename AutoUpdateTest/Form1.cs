@@ -10,7 +10,7 @@ namespace AutoUpdateTest
         {
             InitializeComponent();
 
-            label1.Text = "2.0.0";
+            label1.Text = "3.0.0";
 
             CheckForUpdates();
         }
