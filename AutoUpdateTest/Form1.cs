@@ -7,7 +7,7 @@ namespace AutoUpdateTest
     public partial class Form1 : Form
     {
         private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(11,0,0);
+        private static VersionNumber version = new(12,0,0);
 
         public Form1()
         {
@@ -51,7 +51,8 @@ namespace AutoUpdateTest
                     byte[] fileBytes = await client.GetByteArrayAsync(url);
                     await File.WriteAllBytesAsync(saveFileDialog.FileName, fileBytes);
 
-                    Process.Start("msiexec.exe", saveFileDialog.FileName);
+                    Process.Start("msiexec.exe", $"/i \"{saveFileDialog.FileName}\" /passive");
+                    Environment.Exit(0);
                 }
                 catch (Exception ex)
                 {
