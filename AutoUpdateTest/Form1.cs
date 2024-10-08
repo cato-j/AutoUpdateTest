@@ -7,7 +7,7 @@ namespace AutoUpdateTest
         internal static string pat = "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";
         private static string token => $"Bearer {pat}";
         private static readonly HttpClient client = new HttpClient();
-        private static VersionNumber version = new(5,0,0);
+        private static VersionNumber version = new(6,0,0);
 
         public Form1()
         {
